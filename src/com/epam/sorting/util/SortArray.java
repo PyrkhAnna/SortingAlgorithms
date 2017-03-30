@@ -1,40 +1,50 @@
 package com.epam.sorting.util;
 
 public class SortArray {
-	// private int x=0;
-	public static int[] bubbleSortMax(int[] array) {
-		for (int i = 0; i < array.length; i++) {
-			for (int ii = 0; ii < array.length; ii++) {
-				if (array[i] > array[ii]) {
-					changeItemPlace(array, i, ii);
-				}
-			}
-		}
-		return array;
-	}
-
+	
 	public static int[] bubbleSortMin(int[] array) {
 		for (int i = 0; i < array.length; i++) {
 			for (int ii = 0; ii < array.length; ii++) {
-				if (array[i] < array[ii])
-					changeItemPlace(array, i, ii);
+				changeIfElementIsLarger(array, i, ii);
 			}
 		}
 		return array;
 	}
 
 	public static int[] quickSort(int[] array) {
+		if (array.length!=0) algQuickSort(array, 0, array.length - 1);
+		return array;
+	}
 
+	private static int[] algQuickSort(int[] array, int first, int last) {
+		if (first == last)
+			return array;
+		int i = first;
+		int j = last;
+		int middle = Math.round((first + last) / 2);
+				while (i < j) {
+			while (i < middle && array[i] <= array[middle])
+				i++;
+			while (middle < j && array[middle] <= array[j])
+				j--;
+			if (i < j) {
+				swap(array, i, j);
+				if (i == middle)
+					middle = j;
+				else if (j == middle)
+					middle = i;
+			}
+		}
+		algQuickSort(array, first, middle);
+		algQuickSort(array, middle + 1, last);
 		return array;
 	}
 
 	public static int[] selectionSort(int[] array) {
 		int maxIndex = 0;
-		for (int i = 0; i < array.length-1; i++) {
-			maxIndex = findMax(array, i+1);
-			if (array[i] < array[maxIndex])
-				changeItemPlace(array, i, maxIndex);
-
+		for (int i = 0; i < array.length - 1; i++) {
+			maxIndex = findIndexMaxElement(array, i + 1);
+			changeIfElementIsLarger(array, i, maxIndex);
 		}
 		return array;
 	}
@@ -58,33 +68,25 @@ public class SortArray {
 			arr[i] = arr[i - 1];
 		arr[startIndex] = temp;
 	}
-
-	private static void changeItemPlace(int[] arr, int from, int to) {
+	private static void changeIfElementIsLarger (int[] array, int fist, int second) {
+		if (array[fist] < array[second])
+			swap(array, fist, second);
+	}
+	private static void swap(int[] arr, int from, int to) {
 		int temp = arr[from];
 		arr[from] = arr[to];
 		arr[to] = temp;
 	}
 
-	public static int findMax(int[] arr, int startIndex) {
+	private static int findIndexMaxElement(int[] arr, int startIndex) {
 		int max = arr[startIndex];
 		int maxIndex = startIndex;
-		for (int i = startIndex+1; i < arr.length; i++)
+		for (int i = startIndex + 1; i < arr.length; i++)
 			if (max < arr[i]) {
 				max = arr[i];
 				maxIndex = i;
 			}
 		return maxIndex;
-	}
-
-	public int findMin(int[] arr, int startIndex) {
-		int min = arr[startIndex];
-		int minIndex = startIndex;
-		for (int i = startIndex+1; i < arr.length; i++)
-			if (min > arr[i]) {
-				min = arr[i];
-				minIndex = i;
-			}
-		return minIndex;
 	}
 
 	public static String arrayToString(int[] array) {
